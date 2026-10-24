@@ -1,57 +1,51 @@
-import { ScrollView, View, Text, useWindowDimensions, StyleSheet } from "react-native";
-import Section from "../components/Section";
-import InfoRow from "../components/InfoRow";
-import Badge from "../components/Badge";
-import { DEVICE_CLASSES, getDeviceClass, getColumns } from "../utils/breakpoints";
-import { colors, spacing, radius } from "../theme";
+// src/utils/breakpoints.js
 
-export default function BreakpointsScreen() {
-  const { width } = useWindowDimensions();
-  const deviceClass = getDeviceClass(width);
-  const columns = getColumns(width);
+// Cortes en dp, por ANCHO de ventana
+export const BREAKPOINTS = {
+  phoneLandscape: 600,
+  tabletPortrait: 768,
+  tabletLandscape: 1024,
+};
 
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Section title="Clase de dispositivo actual">
-        <InfoRow label="Ancho de ventana" value={`${width.toFixed(0)} dp`} />
-        <InfoRow label="getDeviceClass(width)" value={deviceClass} />
-        <InfoRow label="getColumns(width)" value={`${columns} columnas`} hint="Lo usa la galería del ejercicio 07" />
-      </Section>
+export const DEVICE_CLASSES = [
+  {
+    key: "phone-portrait",
+    label: "Phone Portrait",
+    range: "< 600 dp",
+    example: "Teléfono en vertical",
+  },
+  {
+    key: "phone-landscape",
+    label: "Phone Landscape",
+    range: "600 – 768 dp",
+    example: "Teléfono pequeño en horizontal",
+  },
+  {
+    key: "tablet-portrait",
+    label: "Tablet Portrait",
+    range: "768 – 1024 dp",
+    example: "Tableta en vertical",
+  },
+  {
+    key: "tablet-landscape",
+    label: "Tablet Landscape",
+    range: "≥ 1024 dp",
+    example: "Tableta en horizontal, ventana web",
+  },
+];
 
-      <Section title="Breakpoints por clase de dispositivo">
-        {DEVICE_CLASSES.map((c) => {
-          const active = c.key === deviceClass;
-          return (
-            <View key={c.key} style={[styles.row, active && styles.rowActive]}>
-              <View style={{ flex: 1 }}>
-                <Text style={[styles.label, active && { color: colors.primary }]}>{c.label}</Text>
-                <Text style={styles.hint}>{c.example}</Text>
-              </View>
-              <Badge tone={active ? "primary" : "info"}>{c.range}</Badge>
-            </View>
-          );
-        })}
-        <Text style={styles.note}>
-          Material Design 3 usa clases parecidas (compact {"<"} 600, medium {"<"} 840, expanded ≥ 840). Lo importante no es el número exacto sino decidir por clase.
-        </Text>
-      </Section>
-    </ScrollView>
-  );
+// Paso 1: clase de dispositivo, comparando en orden
+export function getDeviceClass(width) {
+  if (width < BREAKPOINTS.phoneLandscape) return "phone-portrait";
+  if (width < BREAKPOINTS.tabletPortrait) return "phone-landscape";
+  if (width < BREAKPOINTS.tabletLandscape) return "tablet-portrait";
+  return "tablet-landscape";
 }
 
-const styles = StyleSheet.create({
-  container: { padding: spacing.lg, gap: spacing.lg },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.md,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: "transparent",
-  },
-  rowActive: { backgroundColor: colors.primarySoft, borderColor: colors.primary },
-  label: { fontSize: 14, fontWeight: "700", color: colors.text },
-  hint: { fontSize: 12, color: colors.muted, marginTop: 2 },
-  note: { fontSize: 13, color: colors.muted, lineHeight: 18, marginTop: spacing.sm },
-});
+// Paso 2: columnas con los mismos cortes
+export function getColumns(width) {
+  if (width < BREAKPOINTS.phoneLandscape) return 2;
+  if (width < BREAKPOINTS.tabletPortrait) return 3;
+  if (width < BREAKPOINTS.tabletLandscape) return 4;
+  return 6;
+}
