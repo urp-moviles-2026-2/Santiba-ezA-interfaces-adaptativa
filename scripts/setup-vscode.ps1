@@ -1,4 +1,4 @@
-# Instala en VS Code todas las extensiones recomendadas en .vscode/extensions.json
+﻿# Instala en VS Code todas las extensiones recomendadas en .vscode/extensions.json
 # Uso: npm run setup:vscode   (o powershell -ExecutionPolicy Bypass -File scripts/setup-vscode.ps1)
 $ErrorActionPreference = "Stop"
 Set-Location (Join-Path $PSScriptRoot "..")
